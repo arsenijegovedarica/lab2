@@ -36,7 +36,7 @@ entity top is
    );
 end top;
 
-architecture rtl of top is
+ architecture rtl of top is
 
   constant RES_NUM : natural := 6;
 
@@ -168,8 +168,8 @@ begin
   graphics_lenght <= conv_std_logic_vector(MEM_SIZE*8*8, GRAPH_MEM_ADDR_WIDTH);
   
   -- removed to inputs pin
-  direct_mode <= '1';
-  display_mode     <= "10";  -- 01 - text mode, 10 - graphics mode, 11 - text & graphics
+  direct_mode <= '0';
+  display_mode     <= "01";  -- 01 - text mode, 10 - graphics mode, 11 - text & graphics
   
   font_size        <= x"1";
   show_frame       <= '1';
@@ -250,11 +250,74 @@ begin
   --dir_red
   --dir_green
   --dir_blue
+  
+--   process (dir_pixel_column) begin
+--      if (dir_pixel_column < 80) then
+--			dir_red <= "11111111";
+--			dir_green <= "11111111";
+--			dir_blue <= "11111111";
+--		elsif (dir_pixel_column > 80 and dir_pixel_column < 160) then
+--			dir_red <= "00000000" ;
+--			dir_green <= "11111111";
+--			dir_blue <= "11111111";
+--		elsif (dir_pixel_column > 160 and dir_pixel_column < 240) then
+--			dir_red <= "11111111" ;
+--			dir_green <= "11111111" ;
+--			dir_blue <= "00000000";
+--		elsif (dir_pixel_column > 240 and dir_pixel_column < 320) then
+--			dir_red <= "00000000" ;
+--			dir_green <= "11111111";
+--			dir_blue <= "00000000";
+--		elsif (dir_pixel_column > 320 and dir_pixel_column < 400) then
+--			dir_red <= "11111111" ;
+--			dir_green <= "00000000";  
+--			dir_blue <= "11111111";
+--		elsif (dir_pixel_column > 400 and dir_pixel_column < 480) then
+--			dir_red <= "11111111" ;
+--			dir_green <= "00000000";
+--			dir_blue <= "00000000";
+--		elsif (dir_pixel_column > 480 and dir_pixel_column < 560) then
+--			dir_red <= "00000000" ;
+--			dir_green <= "00000000";
+--			dir_blue <= "11111111";
+--		else 
+--			dir_red <= "00000000"; 
+--			dir_green <= "00000000";
+--			dir_blue <= "00000000";
+--		end if;
+--	end process;
  
+ 
+ ----------------------------------------------------------------------------
   -- koristeci signale realizovati logiku koja pise po TXT_MEM
   --char_address
   --char_value
   --char_we
+  
+  
+  process(pix_clock_s)
+  begin
+  char_we <= '1';
+  
+    if (pix_clock_s'event and pix_clock_s='1') then
+		char_we <= '1';
+		char_value <= "000001";
+    end if;
+  end process;
+  
+  
+	process(char_address)
+	begin
+		if(char_address = 1200) then
+			char_address <= "00000000000000";
+		else
+			char_address <= char_address+1;
+		end if;
+	end process;
+  
+  
+  
+  
   
   -- koristeci signale realizovati logiku koja pise po GRAPH_MEM
   --pixel_address
